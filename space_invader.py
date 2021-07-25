@@ -22,6 +22,13 @@ def main():
         game.start()
 
 
+pg.init()
+WIDTH = 1000
+HEIGTH = 700
+
+GAME_OVER = True
+
+
 class Alien(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -94,6 +101,9 @@ class Alien_Bullet(Bullet):
     def update(self):
         self.rect.y += 20
 
+    def s(self):
+        self.rect.y = 0
+
 
 class Player(pg.sprite.Sprite):
     def __init__(self, x_position, player, x_pos_score):
@@ -120,11 +130,11 @@ class Player(pg.sprite.Sprite):
     def set_increase_score(self):
         self.score += 1
 
-    @ property
+    @property
     def get_increase_score(self):
         return self.score
 
-    @ property
+    @property
     def get_decrease_score(self):
         if self.score == 0:
             self.score = 0
@@ -162,7 +172,6 @@ class Player(pg.sprite.Sprite):
 
     def collide_alien_bullet_player(self, alien_bullet):
         if pg.sprite.spritecollide(sprite=self, group=alien_bullet, dokill=True):
-            # self.get_decrease_score
             return True
 
     def shoot(self):
@@ -255,8 +264,8 @@ class SpaceInavder:
         for i in self.player_sprites.sprites():
             for j in self.aliens_sprites.sprites():
                 if i.collide_alien_bullet_player(j.get_alien_bullet()):
+                    i.respawn_hit()
                     i.get_decrease_score
-                    # print(j.get_alien_bullet())
 
     def add_aliens(self):
         random_alien = random.randint(1, 1)
@@ -264,7 +273,6 @@ class SpaceInavder:
             self.aliens_sprites.add(Alien())
 
     def add_new_aliens(self):
-        # print(len(self.aliens_sprites))
         if len(self.aliens_sprites.sprites()) == 0:
             self.add_aliens()
         for alien in self.aliens_sprites.sprites():
@@ -303,7 +311,6 @@ class SpaceInavder:
             if i.collide_alien_player(self.aliens_sprites):
                 i.respawn_hit()
                 i.get_decrease_score
-                # print("get ya bitch")
 
     def draw_player_bullets(self, screen):
         for i in self.player_sprites.sprites():
@@ -318,13 +325,12 @@ class SpaceInavder:
 
     def win_player(self, screen):
         for i in self.player_sprites.sprites():
-            if i.get_increase_score == 2:
+            if i.get_increase_score == 10:
                 game_over = self.create_font("GAME OVER")
                 restart = self.create_font(
                     "Press Space to restart", 36, (9, 0, 180))
                 winner = self.create_font(
                     f"{i.get_player()} wins", 60, (9, 180, 20))
-                # # # print(i.get_player(), "WINS")
                 screen.blit(game_over, (300, 150))
                 screen.blit(winner, (330, 250))
                 screen.blit(restart, (320, 350))
@@ -389,6 +395,7 @@ class Screen:
 
                 self.space.collide_alien_player()
                 self.space.alien_bullet_Collide_with_player()
+                # self.space.collison_score()
                 self.space.add_new_aliens()
                 self.space.aliens_sprites.update()
                 self.flip()
