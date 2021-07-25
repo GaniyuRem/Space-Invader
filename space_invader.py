@@ -47,13 +47,6 @@ class Alien(pg.sprite.Sprite):
     def get_alien_bullet(self):
         return self.alien_bullet_sprite
 
-    def p(self):
-        self.rect.y = 0
-
-    def s(self):
-        for i in self.alien_bullet_sprite.sprites():
-            i.kill()
-
 
 class UnitFire():
     def __init__(self):
@@ -100,9 +93,6 @@ class Alien_Bullet(Bullet):
 
     def update(self):
         self.rect.y += 20
-
-    def s(self):
-        self.rect.y = 0
 
 
 class Player(pg.sprite.Sprite):
